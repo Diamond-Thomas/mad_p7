@@ -27,7 +27,12 @@ class ProfileScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('User Profile Manager'),
       ),
-      body: const UserBanner(),
+      body: Column(
+        children: [
+          UserBanner(),
+          ProfileForm(),
+        ],
+      ),
     );
   }
 }
@@ -73,5 +78,57 @@ class _FavoriteButtonState extends State<FavoriteButton> {
   
   }
 } 
+
+class ProfileForm extends StatefulWidget {
+  const ProfileForm({super.key});
+
+  @override
+  State<ProfileForm> createState() => _ProfileFormState();
+}
+
+class _ProfileFormState extends State<ProfileForm> {
+  final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+  return Form(
+    key: _formKey,
+    child: Column(
+        children: [
+          TextFormField(
+            controller: _usernameController,
+            decoration: InputDecoration(labelText: 'Username'),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Username cannot be empty';
+              }
+              return null;
+            },
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Profile saved: ${_usernameController.text}'),
+                  ),
+                );
+              }
+            },
+            child: const Text('Save Profile'),
+          ),
+        ],
+      ),);}
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    super.dispose();
+  }
+
+}
+
+
 
 

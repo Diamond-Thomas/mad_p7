@@ -1,3 +1,7 @@
 ### Explain the difference between a StatelessWidget and a StatefulWidget in the context of this button. Why would a StatelessWidget fail to change the icon and color when tapped?
 
 When you create a stateless widget the code is expected to be final so even when you change the isfavored back and forth flutter wouldn't change what is shown unless you throw out the whole page and create a new one but even then because isfavorited is set to false it would still return as false. With stateful widgets it keeps it current state even so on the next rebuild it looks at what the current state should be and changes it with setState() instead of returning to it's default state.
+
+### Describe the purpose of GlobalKey<FormState>. What happens under the hood when _formKey.currentState!.validate() is called, and how does Flutter know to redraw the form with error messages?
+
+The purpose of GlobalKey<FormState> is to provide a way for outside event handlers to see and access the form in order to change the state of it. Flutter knows to redraw the form with error messages becuse the _formKey.currentState!.validate() will check each field for the current state and check if the field passes or fails and when validate fails then the form filed that failed  will be redrawn with an error message.
