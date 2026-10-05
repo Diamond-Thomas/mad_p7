@@ -15,11 +15,23 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
-
-
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+
+class _ProfileScreenState extends State<ProfileScreen> {
+
+  String _currentUsername = 'Guest';
+
+  void _updateUsername(String newName) {
+    setState(() {
+      _currentUsername = newName;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +41,8 @@ class ProfileScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          UserBanner(),
-          ProfileForm(),
+          UserBanner(username: _currentUsername),
+          ProfileForm(onSaveUsername: _updateUsername),
         ],
       ),
     );
@@ -38,13 +50,17 @@ class ProfileScreen extends StatelessWidget {
 }
 
 class UserBanner extends StatelessWidget {
-  const UserBanner({super.key});
+  const UserBanner({
+    super.key,
+    required this.username,
+  });
+  final String username;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children:  [
-        Text('Welcome, Guest!'),
+        Text('Welcome, $username!'),
         FavoriteButton(),
       ]
     );
@@ -80,8 +96,11 @@ class _FavoriteButtonState extends State<FavoriteButton> {
 } 
 
 class ProfileForm extends StatefulWidget {
-  const ProfileForm({super.key});
-
+  const ProfileForm({
+    super.key,
+    required this.onSaveUsername,
+  });
+  final ValueChanged<String> onSaveUsername;
   @override
   State<ProfileForm> createState() => _ProfileFormState();
 }
@@ -109,6 +128,7 @@ class _ProfileFormState extends State<ProfileForm> {
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
+                widget.onSaveUsername(_usernameController.text.trim());
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Profile saved: ${_usernameController.text}'),
